@@ -1,17 +1,19 @@
 <template>
   <div id="home">
     <nar-bar class="home-nav"><div slot="center">购物街</div></nar-bar>
-    <home-swiper :banners="banners"/>
-    <recommend-view :recommends="recommends"/>
-    <feature-view/>
-    <TabControl class="tab-control"
-                :titles="['流行', '新款', '精选']"
-                @tabClick="tabClick"/>
-    <goods-list :goods="showGoods"/>
 
-    <ul>
-      <li v-for="i in 100">{{i}}</li>
-    </ul>
+    <scroll class="content" ref="scroll">
+      <home-swiper :banners="banners"/>
+      <recommend-view :recommends="recommends"/>
+      <feature-view/>
+      <TabControl class="tab-control"
+                  :titles="['流行', '新款', '精选']"
+                  @tabClick="tabClick"/>
+      <goods-list :goods="showGoods"/>
+    </scroll>
+
+    <back-top @click.native="backClick"/>
+
   </div>
 </template>
 
@@ -25,6 +27,8 @@
   import NarBar from 'components/common/navbar/NavBar'
   import TabControl from 'components/content/tabControl/TabControl'
   import GoodsList from 'components/content/goods/GoodsList'
+  import Scroll from 'components/common/scroll/Scroll'
+  import BackTop from 'components/content/backTop/BackTop'
 
   //请求数据
   import {getHomeMultidata, getHomeGoods} from 'network/home'
@@ -38,7 +42,9 @@ export default {
 
     NarBar,
     TabControl,
-    GoodsList
+    GoodsList,
+    Scroll,
+    BackTop
 
   },
   data: function () {
@@ -102,6 +108,10 @@ export default {
         this.goods[type].list = res.data.list;
         this.goods[type].page = res.data.page;
       })
+    },
+
+    backClick: function () {
+      this.$refs.scroll.scrollTo(0, 0);
     }
   }
 };
@@ -110,6 +120,8 @@ export default {
 <style scoped>
   #home {
     padding-top: 44px;
+    height: 100vh;
+    position: relative;
   }
 
   .home-nav {
@@ -128,4 +140,21 @@ export default {
     top: 44px;
     z-index: 9;
   }
+
+  .content {
+    overflow: hidden;
+
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
+
+  }
+
+  /*.content {
+    height: calc(100% - 93px);
+    overflow: hidden;
+    margin-top: 44px;
+  }*/
 </style>
